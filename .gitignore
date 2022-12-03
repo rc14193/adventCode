@@ -1,2 +1,9 @@
 *.bin
 *.lock
+*.json
+*.o
+*.d
+*.rmeta
+*.timestamp
+*bin*
+target/
