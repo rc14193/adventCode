@@ -25,22 +25,31 @@ fn main() {
     })));
     let contents = fs::read_to_string("input.txt").expect("Couldn't read file");
     let mut acc: i64 = 0;
+    let mut acc2: Vec<i64> = vec![];
     parse_tree(contents, &root_node);
-    recurse_tree(&root_node, &mut acc);
+    recurse_tree(&root_node, &mut acc, &mut acc2);
     println!("Found sum of {}", acc);
+    acc2.sort();
+    let unused_space = 70000000-acc2[acc2.len()-1];
+    println!("Unused space is {}", unused_space);
+    let will_be_greater = acc2.iter().filter(|val| **val+unused_space > 30_000_000).collect::<Vec<&i64>>();
+    println!("will be greater {:?}", will_be_greater)
 }
 
-fn recurse_tree(node: &Rc<RefCell<Node>>, acc: &mut i64) -> i64{
+fn recurse_tree(node: &Rc<RefCell<Node>>, acc: &mut i64, acc2: &mut Vec<i64>) -> i64{
     println!("processing node {}", node.borrow().name);
     match node.borrow().object {
         ObjectType::Dir => {
             println!("Hit dir {} so iter children", node.borrow().name);
             let mut sum = 0;
             for child in node.borrow().children.iter() {
-                let sub_size = recurse_tree(child, acc);
+                let sub_size = recurse_tree(child, acc, acc2);
                 sum += sub_size;
             }
-            println!("for dir {} and children {:?} sum is {}", node.borrow().name, node.borrow().children.iter().map(|n| n.borrow().name.clone()).collect::<Vec<String>>(), sum);
+            let out = format!("for dir {} and children {:?} sum is {}", node.borrow().name, node.borrow().children.iter().map(|n| n.borrow().name.clone()).collect::<Vec<String>>(), sum.clone());
+            println!("{}", out);
+            fs::write("scratch.txt", out).expect("couldn't write");
+            acc2.push(sum);
             if sum < 100000 {
                 *acc += sum
             }

@@ -1,0 +1,1 @@
+for dir / and children ["bzcg", "hrtvrp", "jvj", "ltrqb", "msqlnht", "mvs", "nzmddp", "zjvncc"] sum is 48008081
