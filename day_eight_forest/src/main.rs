@@ -161,7 +161,7 @@ fn calculate_view(forest: &Vec<Vec<i8>>, row: usize, col: usize, house_height: i
         }
     }
 
-    println!("for row {} and col {}, and height {} got scores of u, d, l, r: {}, {}, {}, {}", row, col, house_height, up_tree_count, down_tree_count, left_tree_count, right_tree_count);
+    //println!("for row {} and col {}, and height {} got scores of u, d, l, r: {}, {}, {}, {}", row, col, house_height, up_tree_count, down_tree_count, left_tree_count, right_tree_count);
 
     up_tree_count*down_tree_count*left_tree_count*right_tree_count
 
