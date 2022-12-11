@@ -41,32 +41,32 @@ fn main() {
 
     let tests = [11u64,19,5,2,13,7,3,17];
     let example_tests = [23,19,13,17];
-    let destinations = [(5u64,6u64),(4,2),(7,4),(2,1),(7,0),(6,3),(1,3),(0,5)];
+    let destinations = [(5usize,6usize),(4,2),(7,4),(2,1),(7,0),(6,3),(1,3),(0,5)];
     let example_destinations = [(2,3),(2,0),(1,3),(0,1)];
-    let divisor: u64 = *tests.iter().reduce(num::integer::lcm).unwrap();
+    let remainder: u64 = tests.clone().into_iter().reduce(num::integer::lcm).unwrap();
+    let example_big_remainder: u64 = example_tests.clone().into_iter().reduce(num::integer::lcm).unwrap();
     let example_divisor = 3u64;
 
     // actual opeartions
-    for _rounds in 0u64..10_000 { // 20 rounds
-        println!("On round {}", _rounds);
-        for monkey in 0..example_start_items.len() { // iterate through each monkey
-            for _i in 0..example_start_items[monkey].len() { // iterate through each item that each monkey has
-                example_inspection_counts[monkey] += 1;
-                let mut item = example_start_items[monkey].pop_front().unwrap(); 
-                item = example_operations[monkey](item);
+    for _rounds in 0u64..10_000 { // 20 rounds p1
+        println!("On round {}", _rounds+1);
+        for monkey in 0..start_items.len() { // iterate through each monkey
+            for _i in 0..start_items[monkey].len() { // iterate through each item that each monkey has
+                inspection_counts[monkey] += 1;
+                let mut item = start_items[monkey].pop_front().unwrap(); 
+                item = operations[monkey](item) % remainder;
                 //item = item / example_divisor; // part 1 operation
-                item = item / divisor;
-                if item % example_tests[monkey] == 0 {
-                    example_start_items[example_destinations[monkey].0].push_back(item);
+                if item % tests[monkey] == 0 {
+                    start_items[destinations[monkey].0].push_back(item);
                 } else {
-                    example_start_items[example_destinations[monkey].1].push_back(item);
+                    start_items[destinations[monkey].1].push_back(item);
                 }
 
             }
         }
     }
-    example_inspection_counts.sort();
-    println!("Final counts are {:?}", example_inspection_counts);
-    let total = example_inspection_counts[example_inspection_counts.len()-1]*example_inspection_counts[example_inspection_counts.len()-2];
+    inspection_counts.sort();
+    println!("Final counts are {:?}", inspection_counts);
+    let total = inspection_counts[inspection_counts.len()-1]*inspection_counts[inspection_counts.len()-2];
     println!("Total value is {}", total);
 }
