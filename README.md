@@ -1,2 +1,2 @@
 # adventCode2022
-My submissions for the 2022 advent of code. Done in Rust.
+My submissions for the advent of code over the years.
