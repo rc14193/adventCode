@@ -15,6 +15,7 @@ fn main() {
     let file = "input.txt";
     let contents = fs::read_to_string(file).expect("Couldn't get contents");
     let mut valid_sums: u32 = 0;
+    let mut power_sums: u32 = 0;
     let max_valid = [12u32,13,14];
     for line in contents.lines() {
         // separate game id and game
@@ -40,11 +41,15 @@ fn main() {
         let mut impossible = zip(max_valid, color_maxes).map(|maxes| maxes.0 >= maxes.1);
         let is_valid = impossible.all(|v| v);
         if is_valid {
-            println!("Game id {} is valid", game_id);
             valid_sums = valid_sums + game_id.parse::<u32>().expect("Couldn't parse game id value");
         }
+        // part 2 we already have max for each color in each game (max would be min cubes required)
+        // take these and get power of cubes
+        let power_val = color_maxes.into_iter().fold(1, |mut acc, val| acc*val);
+        println!("Game id {} has min colors of r,g,b {:?} and power {}", game_id, color_maxes, power_val);
+        power_sums += power_val;
     }
-    println!("Sum of valid games is {}", valid_sums)
+    println!("Sum of valid games is {}, and powers sums is {}", valid_sums, power_sums)
 }
 
 // for more robust could str lower but won't cause advent of code :)
