@@ -49,7 +49,7 @@ fn main() {
     }
     let gear_ratios: Vec<_> = gear_ratios
         .values()
-        .filter(|gear| gear.len() >= 2)
+        .filter(|gear| gear.len() == 2)
         .collect();
     println!("part nums of {:?}", part_nums);
     let part_num_sum = part_nums.into_iter().fold(0, |acc, val| acc + val);
