@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, collections::VecDeque};
 
 fn main() {
     let file = "example_input.txt";
@@ -45,42 +45,21 @@ fn main() {
     let even_seeds = seeds.clone().into_iter().step_by(2);
     let odd_seeds = seeds.clone().into_iter().skip(1).step_by(2);
     let seed_ranges = even_seeds.zip(odd_seeds).collect::<Vec<_>>();
-    println!("seed ranges are {:?}", seed_ranges);
-    let mut seeds_from_range = Vec::new();
-    let mut min_range: (u64, u64) = (0,0);
-    let mut min_translated_range: (u64, u64) = (0,0);
-    let mut min_translated = u64::MAX;
-   for range in seed_ranges {
-        println!("checking range {:?}", range);
-        let translated1 = seed_translator(range.0, &parsed_maps);
-        let translated2 = seed_translator(range.0 + range.1, &parsed_maps);
-        println!("Got values of {} and {}", translated1, translated2);
-        if (translated1 < min_translated || translated2 < min_translated) {
-            seeds_from_range = Vec::new();
-            seeds_from_range.push(translated1);
-            seeds_from_range.push(translated2);
-            min_translated = [translated1, translated2].into_iter().min().unwrap();
-            min_range = range;
-            min_translated_range = (translated1, translated2)
+
+    let d = parsed_maps.iter().map(|v| v.iter().map(|i| i.iter().nth(1).unwrap()).collect::<Vec<_>>()).collect::<Vec<_>>();
+    println!("d is {:?}", d.clone());
+    //let mut dq: VecDeque<_> = VecDeque::from(d);
+    let mut tr_pts = Vec::new();
+    for (idx, pt) in d.clone().iter().enumerate() {
+        let map = parsed_maps.clone().into_iter().skip(idx+1).collect::<Vec<Vec<_>>>();
+        if map.len() != 0 {
+            for p in pt {
+                tr_pts.push(seed_translator(**p, &map))
+            }
         }
-    } 
-    println!("cheking bounds range is {:?}", seeds_from_range);
-    println!("checking min translated range of {:?}", min_translated_range);
-    let range_min = min_translated_range.0.min(min_translated_range.1);
-    let range_max = min_translated_range.0.max(min_translated_range.1);
-    println!("range min is {} and max is {}", range_min, range_max);
-    let mut total_min = u64::MAX;
-    let mut seeds_from_range = Vec::new();
-    for seed in min_range.0..=(min_range.0+min_range.1) {
-        let translated = seed_translator(seed, &parsed_maps);
-        seeds_from_range.push(translated);
-        if translated < total_min {
-            total_min = translated;
         }
-    }
-    println!("output range is {:?}", seeds_from_range);
-    println!("min range is {:?}", min_range);
-    println!("total min is {}", total_min);
+    println!("tr_pts is {:?}", tr_pts);
+
 }
 
 fn seed_translator_reversed(mut seed: u64, parsed_maps: &Vec<Vec<Vec<u64>>>) -> u64 {
